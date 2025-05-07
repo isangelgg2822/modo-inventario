@@ -1,0 +1,373 @@
+/* Estilos para la página principal */
+.wrapper {
+  min-height: 100vh;
+  background-color: #F3F4F6; /* Gris claro para fondo */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+
+  /* Paleta de colores como variables dentro de .wrapper */
+  --primary: #1E3A8A;       /* Azul oscuro para encabezados y botones principales */
+  --secondary: #60A5FA;     /* Azul claro para botones secundarios */
+  --accent: #F97316;        /* Naranja para acciones destacadas */
+  --background: #F3F4F6;    /* Gris claro para fondo */
+  --text: #1F2937;          /* Gris oscuro para texto */
+  --text-secondary: #4B5563;/* Gris medio para texto secundario */
+  --error: #EF4444;         /* Rojo suave para errores */
+  --error-light: rgba(239, 68, 68, 0.1); /* Fondo rojo claro para errores */
+  --border: #D1D5DB;        /* Gris claro para bordes */
+  --white: #FFFFFF;         /* Blanco para fondos de elementos */
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.heading {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--primary); /* Azul oscuro para el título */
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  font-size: 1.25rem;
+  color: var(--text-secondary); /* Gris medio para subtítulo */
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive: ajusta columnas según espacio */
+  gap: 2rem;
+  width: 100%;
+  max-width: 600px; /* Aumentado para dar más espacio a las tarjetas */
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--white); /* Fondo blanco para tarjetas */
+  padding: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.card:hover {
+  background-color: var(--border); /* Gris claro al hover */
+}
+
+.icon {
+  font-size: 3rem;
+  color: var(--primary); /* Azul oscuro para íconos */
+  margin-bottom: 1rem;
+}
+
+.cardText {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text); /* Texto gris oscuro */
+  text-align: center;
+}
+
+/* Estilos para el formulario en app/generate/page.js */
+.formContainer {
+  min-height: 100vh;
+  background-color: var(--background); /* Fondo gris claro */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  width: 100vw;
+  box-sizing: border-box;
+}
+
+.formWrapper {
+  width: 100%;
+  max-width: 40rem;
+  background-color: var(--white); /* Fondo blanco para el formulario */
+  padding: 2.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border); /* Borde gris */
+}
+
+.formHeader {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.formHeading {
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--primary); /* Azul oscuro para el título */
+  margin-bottom: 1rem;
+}
+
+.formSubtitle {
+  font-size: 1.125rem;
+  color: var(--text-secondary); /* Gris medio para subtítulo */
+}
+
+.formNav {
+  margin-top: 1rem;
+  font-size: 1rem;
+}
+
+.formNav a {
+  color: var(--secondary); /* Azul claro para enlaces */
+  text-decoration: none;
+}
+
+.formNav a:hover {
+  text-decoration: underline;
+}
+
+.errorMessage {
+  background-color: var(--error-light); /* Fondo rojo claro para errores */
+  padding: 1rem;
+  border-radius: 0.5rem;
+  color: var(--error); /* Rojo para texto de error */
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--error);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.section {
+  margin-bottom: 2rem;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary); /* Azul oscuro para títulos de sección */
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.sectionTitle .icon {
+  margin-right: 1rem;
+  font-size: 1.5rem;
+  color: var(--secondary); /* Azul claro para íconos */
+}
+
+.field {
+  margin-bottom: 1rem;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  color: var(--text); /* Texto gris oscuro */
+  margin-bottom: 0.5rem;
+}
+
+.label .icon {
+  margin-right: 0.75rem;
+  font-size: 1.25rem;
+  color: var(--secondary); /* Azul claro para íconos */
+}
+
+.input,
+.select {
+  width: 100%;
+  padding: 1rem;
+  background-color: var(--white); /* Fondo blanco para campos */
+  color: var(--text);
+  border: 1px solid var(--border); /* Borde gris */
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.input:focus,
+.select:focus {
+  outline: none;
+  border-color: var(--secondary); /* Borde azul claro al enfocar */
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2); /* Sombra azul clara */
+}
+
+.itemGrid {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.itemGrid .input {
+  padding: 1rem;
+}
+
+.removeButton {
+  background-color: var(--error); /* Rojo para eliminar */
+  color: var(--white);
+  padding: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1rem;
+}
+
+.removeButton:hover {
+  background-color: #DC2626; /* Rojo más oscuro al hover */
+}
+
+.addButton,
+.previewButton,
+.clearButton {
+  background-color: var(--secondary); /* Azul claro para botones */
+  color: var(--white);
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.addButton:hover,
+.previewButton:hover,
+.clearButton:hover {
+  background-color: var(--primary); /* Azul oscuro al hover */
+}
+
+.addButton .icon,
+.previewButton .icon,
+.clearButton .icon {
+  margin-right: 0.75rem;
+  font-size: 1.25rem;
+  color: var(--white);
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+.modalContent {
+  background-color: var(--white); /* Fondo blanco para el modal */
+  padding: 2rem;
+  border-radius: 0.75rem;
+  max-width: 40rem;
+  width: 100%;
+  border: 1px solid var(--border);
+}
+
+.modalTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--primary); /* Azul oscuro para el título del modal */
+  margin-bottom: 1.5rem;
+}
+
+.modalSection {
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+}
+
+.modalSectionTitle {
+  font-weight: 600;
+  color: var(--primary); /* Azul oscuro para títulos de sección */
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+.modalTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.modalTable th,
+.modalTable td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.modalTable th {
+  background-color: var(--secondary); /* Azul claro para encabezados de tabla */
+  color: var(--white);
+}
+
+.modalText {
+  color: var(--text-secondary); /* Gris medio para texto */
+  font-size: 1rem;
+}
+
+.modalSignatureGroup {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.closeButton {
+  background-color: var(--text); /* Gris oscuro para cerrar */
+  color: var(--white);
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1rem;
+}
+
+.closeButton:hover {
+  background-color: #374151; /* Gris más oscuro al hover */
+}
+
+.downloadButton {
+  background-color: var(--accent); /* Naranja para destacar */
+  color: var(--white);
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 1rem;
+}
+
+.downloadButton:hover {
+  background-color: #EA580C; /* Naranja más oscuro al hover */
+}
+
+.downloadButton:disabled {
+  background-color: var(--text); /* Gris oscuro cuando está deshabilitado */
+  cursor: not-allowed;
+}
