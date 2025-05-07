@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from "next/navigation"; // ✅ Correcto para App Router
+
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { createClient } from '@supabase/supabase-js';
