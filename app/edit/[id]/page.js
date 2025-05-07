@@ -1,21 +1,27 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { useRouter } from "next/navigation"; // ✅ Correcto para App Router
-
+import { useRouter } from "next/navigation";
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { createClient } from '@supabase/supabase-js';
-import styles from '../page.module.css';
+// Asegúrate de que page.module.css existe en app/page.module.css o ajusta la ruta
+import styles from "../../page.module.css"; // Ajusta la ruta según la ubicación real
+
 
 const supabase = createClient(
-    'https://ubybkfbmszmkfotdkfsg.supabase.co', // Reemplaza con tu URL de Supabase
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVieWJrZmJtc3pta2ZvdGRrZnNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYxOTk1MTQsImV4cCI6MjA2MTc3NTUxNH0.SeFyqe_bkdwT89gMwS8obrE8oCTs01WsrJXq3izv76Q' // Reemplaza con tu Anon Key
-  );
+  'https://ubybkfbmszmkfotdkfsg.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVieWJrZmJtc3pta2ZvdGRrZnNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYxOTk1MTQsImV4cCI6MjA2MTc3NTUxNH0.SeFyqe_bkdwT89gMwS8obrE8oCTs01WsrJXq3izv76Q'
+);
 
-export default function EditActa() {
+// Forzar renderizado dinámico
+export const dynamic = "force-dynamic";
+
+export default function EditActa({ params }) {
+  console.log('Renderizando EditActa con params:', params);
+
   const router = useRouter();
-  const { id } = router.query;
+  const { id } = params || {};
   const [formData, setFormData] = useState({
     date: '',
     assignedPerson: '',
@@ -32,55 +38,67 @@ export default function EditActa() {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   const modalRef = useRef(null);
   const firstInputRef = useRef(null);
 
   useEffect(() => {
-    if (id) {
-      const fetchActa = async () => {
-        try {
-          const { data, error } = await supabase
-            .from('actas')
-            .select(`
-              *,
-              items (serial, description, quantity),
-              firmas (deliverer, receiver, area_responsible)
-            `)
-            .eq('id', id)
-            .single();
-
-          if (error) {
-            throw new Error(`Error al cargar el acta: ${error.message}`);
-          }
-
-          setFormData({
-            date: data.date,
-            assignedPerson: data.assigned_person,
-            location: data.location,
-            items: data.items.length > 0 ? data.items : [{ serial: '', description: '', quantity: '' }],
-            deliverer: data.firmas.deliverer || '',
-            receiver: data.firmas.receiver || '',
-            areaResponsible: data.firmas.area_responsible || '',
-            idNumber: data.id_number,
-            exitTo: data.exit_to || '',
-            exitFrom: data.exit_from || '',
-          });
-          setActaType(data.acta_type);
-        } catch (error) {
-          setErrors({ fetch: error.message });
-        }
-      };
-
-      fetchActa();
-    }
-  }, [id]);
-
-  useEffect(() => {
-    firstInputRef.current?.focus();
+    console.log('Montando componente EditActa en el cliente');
+    setIsClient(true);
   }, []);
 
   useEffect(() => {
+    if (!isClient || !id) return;
+
+    console.log(`Cargando datos del acta con id: ${id}`);
+    const fetchActa = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('actas')
+          .select(`
+            *,
+            items (serial, description, quantity),
+            firmas (deliverer, receiver, area_responsible)
+          `)
+          .eq('id', id)
+          .single();
+
+        if (error) {
+          throw new Error(`Error al cargar el acta: ${error.message}`);
+        }
+
+        setFormData({
+          date: data.date || '',
+          assignedPerson: data.assigned_person || '',
+          location: data.location || 'MoDo CARACAS',
+          items: data.items.length > 0 ? data.items : [{ serial: '', description: '', quantity: '' }],
+          deliverer: data.firmas?.deliverer || '',
+          receiver: data.firmas?.receiver || '',
+          areaResponsible: data.firmas?.area_responsible || '',
+          idNumber: data.id_number || '',
+          exitTo: data.exit_to || '',
+          exitFrom: data.exit_from || '',
+        });
+        setActaType(data.acta_type || 'assignment');
+      } catch (error) {
+        console.error('Error al cargar el acta:', error);
+        setErrors({ fetch: error.message });
+      }
+    };
+
+    fetchActa();
+  }, [id, isClient]);
+
+  useEffect(() => {
+    if (isClient) {
+      firstInputRef.current?.focus();
+    }
+  }, [isClient]);
+
+  useEffect(() => {
+    if (!isClient) return;
+
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' && showPreview) {
         setShowPreview(false);
@@ -95,7 +113,7 @@ export default function EditActa() {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [showPreview]);
+  }, [showPreview, isClient]);
 
   const handleInputChange = (e, index = null, field = null) => {
     if (index !== null && field) {
@@ -200,6 +218,7 @@ export default function EditActa() {
 
       return true;
     } catch (error) {
+      console.error('Error en updateInSupabase:', error);
       setErrors({ supabase: error.message });
       setIsLoading(false);
       return false;
@@ -219,16 +238,10 @@ export default function EditActa() {
     doc.setLineWidth(0.5);
     doc.rect(boxX, boxY, boxWidth, boxHeight);
 
-    const logoWidth = 40;
-    const logoHeight = 20;
-    const logoX = boxX + 5;
-    const logoY = boxY + 5;
-    doc.addImage('/logo.png', 'PNG', logoX, logoY, logoWidth, logoHeight);
-
     const title = actaType === 'assignment' ? 'ACTA DE ASIGNACIÓN DE EQUIPOS' : 'ACTA DE SALIDA DE EQUIPOS';
     const subtitle = 'CORPORACIÓN MODO CARACAS, C.A';
-    const textX = logoX + logoWidth + 10;
-    const textY = logoY + 5;
+    const textX = boxX + 5;
+    const textY = boxY + 15;
 
     doc.setFontSize(14);
     doc.text(title, textX, textY);
@@ -298,7 +311,7 @@ export default function EditActa() {
     const pdfPath = `acta_${id}_${formData.date}.pdf`;
     const { error: uploadError } = await supabase.storage
       .from('actas-pdfs')
-      .upload(pdfPath, pdfBlob, { contentType: 'application/pdf', upsert: true });
+      .upload(pdfPath, pdfBlob, { contentType: 'application/pdf', upsert: true});
 
     if (uploadError) {
       throw new Error(`Error al subir el PDF: ${uploadError.message}`);
@@ -328,6 +341,7 @@ export default function EditActa() {
       await generateAndUploadPDF();
       router.push('/history');
     } catch (error) {
+      console.error('Error al generar PDF:', error);
       setErrors({ pdf: error.message });
     } finally {
       setIsLoading(false);
@@ -360,6 +374,33 @@ export default function EditActa() {
     setErrors({});
     setShowPreview(false);
   };
+
+  if (!id) {
+    return (
+      <div className={styles.wrapper}>
+        <header className={styles.header}>
+          <h1 className={styles.heading1}>Editar Acta</h1>
+        </header>
+        <main className={styles.container}>
+          <p>No se proporcionó un ID de acta. Por favor, selecciona un acta desde el historial.</p>
+          <a href="/history" className={styles.navLink}>Volver al Historial</a>
+        </main>
+      </div>
+    );
+  }
+
+  if (!isClient) {
+    return (
+      <div className={styles.wrapper}>
+        <header className={styles.header}>
+          <h1 className={styles.heading1}>Editar Acta</h1>
+        </header>
+        <main className={styles.container}>
+          <p>Cargando...</p>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -594,11 +635,6 @@ export default function EditActa() {
                     boxSizing: 'border-box',
                   }}
                 >
-                  <img
-                    src="/logo.png"
-                    alt="MoDo Caracas Logo"
-                    style={{ width: '60mm', height: '30mm', marginRight: '5mm' }}
-                  />
                   <div>
                     <h3 style={{ margin: 0, fontSize: '14pt' }}>
                       {actaType === 'assignment' ? 'ACTA DE ASIGNACIÓN DE EQUIPOS' : 'ACTA DE SALIDA DE EQUIPOS'}
